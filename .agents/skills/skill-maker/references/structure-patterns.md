@@ -6,12 +6,13 @@ This document provides detailed guidance on choosing and implementing the right 
 
 Choose a structure that fits the skill's purpose. Patterns can be mixed - most skills combine multiple patterns.
 
-| Pattern | Best For | Primary Sections |
-|---------|----------|------------------|
-| **Workflow-Based** | Sequential processes | Overview + Workflow + Steps |
-| **Task-Based** | Tool collections | Overview + Quick Start + Tasks |
-| **Reference/Guidelines** | Standards/specifications | Overview + Guidelines + Specs |
-| **Capabilities-Based** | Integrated systems | Overview + Core Capabilities + Features |
+
+| Pattern                  | Best For                 | Primary Sections                        |
+| ------------------------ | ------------------------ | --------------------------------------- |
+| **Workflow-Based**       | Sequential processes     | Overview + Workflow + Steps             |
+| **Task-Based**           | Tool collections         | Overview + Quick Start + Tasks          |
+| **Reference/Guidelines** | Standards/specifications | Overview + Guidelines + Specs           |
+| **Capabilities-Based**   | Integrated systems       | Overview + Core Capabilities + Features |
 
 ---
 
@@ -20,6 +21,7 @@ Choose a structure that fits the skill's purpose. Patterns can be mixed - most s
 **Use when:** The skill guides users through a defined sequence of steps to accomplish a goal.
 
 **Structure:**
+
 ```markdown
 # [Skill Name]
 
@@ -43,11 +45,13 @@ Common issues and solutions.
 ```
 
 **Example Skills:**
+
 - `skill-maker` - 6-step skill creation process
 - `deployment-pipeline` - CI/CD workflow
 - `onboarding` - New user setup process
 
 **Best Practices:**
+
 - Number steps clearly
 - Include skip conditions at step start
 - Add decision points where branching is needed
@@ -60,6 +64,7 @@ Common issues and solutions.
 **Use when:** The skill provides a collection of related but independent operations.
 
 **Structure:**
+
 ```markdown
 # [Skill Name]
 
@@ -83,11 +88,13 @@ Quick reference for common operations.
 ```
 
 **Example Skills:**
+
 - `pdf-editor` - Rotate, merge, split, fill forms
 - `git-operations` - Branch, merge, rebase, cherry-pick
 - `data-transform` - Convert, filter, aggregate, export
 
 **Best Practices:**
+
 - Make tasks independently usable
 - Include "When to use" for each task
 - Provide a quick reference table
@@ -100,6 +107,7 @@ Quick reference for common operations.
 **Use when:** The skill provides standards, conventions, or specifications to follow.
 
 **Structure:**
+
 ```markdown
 # [Skill Name]
 
@@ -123,11 +131,13 @@ What to avoid and why.
 ```
 
 **Example Skills:**
+
 - `code-style` - Language-specific formatting rules
 - `api-design` - REST/GraphQL conventions
 - `security-guidelines` - Security best practices
 
 **Best Practices:**
+
 - Lead with principles, follow with specifics
 - Include both positive and negative examples
 - Provide decision trees for complex choices
@@ -140,6 +150,7 @@ What to avoid and why.
 **Use when:** The skill integrates with a system or API and exposes its functionality.
 
 **Structure:**
+
 ```markdown
 # [Skill Name]
 
@@ -166,11 +177,13 @@ Detailed operation documentation (or link to references/).
 ```
 
 **Example Skills:**
+
 - `big-query` - Google BigQuery integration
 - `aws-manager` - AWS service operations
 - `github-ops` - GitHub API interactions
 
 **Best Practices:**
+
 - Group by capability, not by API endpoint
 - Include authentication details upfront
 - Provide common workflow examples
@@ -182,13 +195,15 @@ Detailed operation documentation (or link to references/).
 
 Most skills combine patterns. Common combinations:
 
-| Combination | Example |
-|-------------|---------|
-| Workflow + Task | `skill-maker` - Process steps with task-based scripts |
+
+| Combination              | Example                                                        |
+| ------------------------ | -------------------------------------------------------------- |
+| Workflow + Task          | `skill-maker` - Process steps with task-based scripts          |
 | Capabilities + Reference | `api-integration` - Features with detailed specs in references |
-| Task + Guidelines | `code-review` - Tasks with quality standards |
+| Task + Guidelines        | `code-review` - Tasks with quality standards                   |
 
 **Hybrid Structure Example:**
+
 ```markdown
 # [Skill Name]
 
@@ -218,17 +233,18 @@ See references/ for detailed specifications.
 **Decision Tree:**
 
 1. **Is there a defined sequence of steps?**
+
    - Yes + steps are mandatory: **Workflow-Based**
    - Yes + steps are optional: **Workflow + Task hybrid**
-
 2. **Are operations independent of each other?**
+
    - Yes: **Task-Based**
-
 3. **Is this primarily about standards and rules?**
+
    - Yes: **Reference/Guidelines**
-
 4. **Is this about using a system/API?**
-   - Yes: **Capabilities-Based**
 
+   - Yes: **Capabilities-Based**
 5. **Multiple answers apply?**
+
    - Use a **Hybrid** approach

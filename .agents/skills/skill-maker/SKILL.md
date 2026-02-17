@@ -2,21 +2,21 @@
 name: skill-maker
 description: This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   changelog: skill-maker/CHANGELOG.md
 ---
-
 # Skill Maker
 
 This skill standardizes the skill creation process.
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
+
+| Task                 | Command                                                        |
+| -------------------- | -------------------------------------------------------------- |
 | Initialize new skill | `scripts/init_skill.py <skill-name> --path <output-directory>` |
-| Validate skill | `scripts/quick_validate.py <skill-directory>` |
-| Package skill | `scripts/package_skill.py <skill-folder> [output-dir]` |
+| Validate skill       | `scripts/quick_validate.py <skill-directory>`                  |
+| Package skill        | `scripts/package_skill.py <skill-folder> [output-dir]`         |
 
 ## References
 
@@ -77,6 +77,7 @@ scripts/init_skill.py <skill-name> --path <output-directory>
 ```
 
 The script creates:
+
 - Skill directory with proper structure
 - SKILL.md template with frontmatter and TODO placeholders
 - CHANGELOG.md for version tracking
@@ -120,6 +121,7 @@ scripts/package_skill.py <path/to/skill-folder> [output-directory]
 ```
 
 The packaging script:
+
 1. **Validates** the skill: frontmatter format, required fields, naming conventions, description quality
 2. **Packages** into a zip file named after the skill (e.g., `my-skill.zip`)
 
@@ -130,6 +132,7 @@ If validation fails, fix errors and run again.
 After testing, users may request improvements based on how the skill performed.
 
 **Iteration workflow:**
+
 - Use the skill on real tasks
 - Identify struggles or inefficiencies
 - Update SKILL.md or bundled resources as needed
