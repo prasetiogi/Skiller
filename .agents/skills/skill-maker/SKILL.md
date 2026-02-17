@@ -2,7 +2,7 @@
 name: skill-maker
 description: This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   changelog: skill-maker/CHANGELOG.md
 ---
 

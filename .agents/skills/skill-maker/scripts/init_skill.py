@@ -13,11 +13,15 @@ Examples:
 
 import sys
 from pathlib import Path
+from datetime import datetime
 
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
 description: [TODO: This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose]. Use third-person phrasing and be specific about trigger conditions.]
+metadata:
+  version: 0.0.0
+  changelog: {skill_name}/CHANGELOG.md
 ---
 
 # {skill_title}
@@ -26,33 +30,13 @@ description: [TODO: This skill MUST be loaded before [action]. This skill should
 
 [TODO: 1-2 sentences explaining what this skill enables]
 
-## Structuring This Skill
+## Structure
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
-
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" → "Reading" → "Creating" → "Editing"
-- Structure: ## Overview → ## Workflow Decision Tree → ## Step 1 → ## Step 2...
-
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" → "Merge PDFs" → "Split PDFs" → "Extract Text"
-- Structure: ## Overview → ## Quick Start → ## Task Category 1 → ## Task Category 2...
-
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" → "Colors" → "Typography" → "Features"
-- Structure: ## Overview → ## Guidelines → ## Specifications → ## Usage...
-
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" → numbered capability list
-- Structure: ## Overview → ## Core Capabilities → ### 1. Feature → ### 2. Feature...
-
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
-
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+[TODO: Choose a structure pattern (see skill-maker SKILL.md "Structure Patterns"). Common options:
+- Workflow-Based: Sequential processes
+- Task-Based: Tool collections
+- Reference/Guidelines: Standards/specifications
+- Capabilities-Based: Integrated systems]
 
 ## [TODO: Replace with the first main section based on chosen structure]
 
@@ -100,6 +84,21 @@ Files not intended to be loaded into context, but rather used within the output 
 ---
 
 **Any unneeded directories can be deleted.** Not every skill requires all three types of resources.
+"""
+
+CHANGELOG_TEMPLATE = """# Changelog
+
+All notable changes to this skill will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.0.0] - {datetime}
+
+### Added
+
+- Initial release of {skill_name} skill
+- [TODO: Add initial features/capabilities]
 """
 
 EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
@@ -233,6 +232,21 @@ def init_skill(skill_name, path):
         print(f"❌ Error creating SKILL.md: {e}")
         return None
 
+    # Create CHANGELOG.md from template
+    current_datetime = datetime.now().strftime("%d %b %Y %H:%M")
+    changelog_content = CHANGELOG_TEMPLATE.format(
+        skill_name=skill_name,
+        datetime=current_datetime
+    )
+
+    changelog_path = skill_dir / 'CHANGELOG.md'
+    try:
+        changelog_path.write_text(changelog_content)
+        print("✅ Created CHANGELOG.md")
+    except Exception as e:
+        print(f"❌ Error creating CHANGELOG.md: {e}")
+        return None
+
     # Create resource directories with example files
     try:
         # Create scripts/ directory with example script
@@ -264,8 +278,9 @@ def init_skill(skill_name, path):
     print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
     print("\nNext steps:")
     print("1. Edit SKILL.md to complete the TODO items and update the description")
-    print("2. Customize or delete the example files in scripts/, references/, and assets/")
-    print("3. Run the validator when ready to check the skill structure")
+    print("2. Update CHANGELOG.md with initial features")
+    print("3. Customize or delete the example files in scripts/, references/, and assets/")
+    print("4. Run the validator when ready to check the skill structure")
 
     return skill_dir
 

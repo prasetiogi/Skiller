@@ -5,6 +5,18 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 17 Feb 2026 20:09
+
+### Added
+
+- init_skill.py now generates CHANGELOG.md file automatically
+- SKILL_TEMPLATE now includes metadata section with version and changelog fields
+
+### Changed
+
+- Simplified Structure section in template - now references skill-maker SKILL.md instead of duplicating content
+- Removed verbose "Structuring This Skill" section - replaced with concise "Structure" section
+
 ## [1.3.0] - 17 Feb 2026 17:52
 
 ### Added
