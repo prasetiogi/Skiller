@@ -1,34 +1,31 @@
 ---
-name: skill-creator
-description: >-
-  Guide for creating effective skills. This skill should be used when users want
-  to create a new skill (or update an existing skill) that extends Kilo's
-  capabilities with specialized knowledge, workflows, or tool integrations.
-license: Complete terms in LICENSE.txt
+name: skill-maker
+description: Guide for creating effective skills. This skill should be used when creating or updating skills that extend agent capabilities with specialized knowledge, workflows, or tool integrations.
 metadata:
-  category: development
-  source:
-    repository: 'https://github.com/ComposioHQ/awesome-claude-skills'
-    path: skill-creator
+  version: 1.0.0
+  changelog: skill-maker/CHANGELOG.md
 ---
 
-# Skill Creator
+# Skill Maker
 
-This skill provides guidance for creating effective skills.
+This skill standardizes the skill creation process.
 
 ## About Skills
 
-Skills are modular, self-contained packages that extend the agent's capabilities by providing
-specialized knowledge, workflows, and tools. Think of them as "onboarding guides" for specific
-domains or tasks—they transform a general-purpose agent into a specialized agent
-equipped with procedural knowledge that no model can fully possess.
+Skills are modular, self-contained packages that extend the agent's capabilities:
+
+- Provide specialized knowledge, workflows, and tools
+- Transform a general-purpose agent into a specialized agent
+- Equip agents with procedural knowledge that no model can fully possess
+- Serve as "onboarding guides" for specific domains or tasks
+- Intended for AI/LLM consumption, not for humans
 
 ### What Skills Provide
 
-1. Specialized workflows - Multi-step procedures for specific domains
-2. Tool integrations - Instructions for working with specific file formats or APIs
-3. Domain expertise - Company-specific knowledge, schemas, business logic
-4. Bundled resources - Scripts, references, and assets for complex and repetitive tasks
+- **Specialized workflows** - Multi-step procedures for specific domains
+- **Tool integrations** - Instructions for working with specific file formats or APIs
+- **Domain expertise** - Company-specific knowledge, schemas, business logic
+- **Bundled resources** - Scripts, references, and assets for complex and repetitive tasks
 
 ### Anatomy of a Skill
 
@@ -49,7 +46,7 @@ skill-name/
 
 #### SKILL.md (required)
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Specify what the skill does and when to use it. Use third-person phrasing (e.g., `This skill should be used when...` instead of `Use this skill when...`).
 
 #### Bundled Resources (optional)
 
@@ -64,14 +61,14 @@ Executable code (Python/Bash/etc.) for tasks that require deterministic reliabil
 
 ##### References (`references/`)
 
-Documentation and reference material intended to be loaded as needed into context to inform the agent's process and thinking.
+Documentation loaded into context as needed to inform the agent's process.
 
 - **When to include**: For documentation that the agent should reference while working
-- **Examples**: `references/finance.md` for financial schemas, `references/mnda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications
+- **Examples**: `references/finance.md` for financial schemas, `references/nda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications
 - **Use cases**: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides
 - **Benefits**: Keeps SKILL.md lean, loaded only when the agent determines it's needed
 - **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md
-- **Avoid duplication**: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.
+- **Avoid duplication**: Place information in either SKILL.md or references files, not both. Keep only essential procedural instructions in SKILL.md; move detailed schemas, examples, and reference material to references files.
 
 ##### Assets (`assets/`)
 
@@ -86,21 +83,19 @@ Files not intended to be loaded into context, but rather used within the output 
 
 Skills use a three-level loading system to manage context efficiently:
 
-1. **Metadata (name + description)** - Always in context (~100 words)
-2. **SKILL.md body** - When skill triggers (<5k words)
-3. **Bundled resources** - As needed by the agent (Unlimited*)
-
-*Unlimited because scripts can be executed without reading into context window.
+- **Metadata (name + description)** - Always in context (~100 words)
+- **SKILL.md body** - When skill triggers (<5k words)
+- **Bundled resources** - As needed by the agent (unlimited; scripts can execute without loading into context)
 
 ## Skill Creation Process
 
-To create a skill, follow the "Skill Creation Process" in order, skipping steps only if there is a clear reason why they are not applicable.
+Follow the Skill Creation Process in order, skipping steps only when clearly not applicable.
 
 ### Step 1: Understanding the Skill with Concrete Examples
 
-Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.
+Skip this step only when the skill's usage patterns are already clearly understood.
 
-To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.
+Understand concrete examples of how the skill will be used. This can come from direct user examples or generated examples validated with user feedback.
 
 For example, when building an image-editor skill, relevant questions include:
 
@@ -109,9 +104,9 @@ For example, when building an image-editor skill, relevant questions include:
 - "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
 - "What would a user say that should trigger this skill?"
 
-To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.
+To prevent overwhelming users, ask questions incrementally rather than all at once.
 
-Conclude this step when there is a clear sense of the functionality the skill should support.
+Conclude this step when the skill's functionality is clearly defined.
 
 ### Step 2: Planning the Reusable Skill Contents
 
@@ -139,11 +134,9 @@ To establish the skill's contents, analyze each concrete example to create a lis
 
 ### Step 3: Initializing the Skill
 
-At this point, it is time to actually create the skill.
+Skip this step if the skill already exists and only iteration or packaging is needed.
 
-Skip this step only if the skill being developed already exists, and iteration or packaging is needed. In this case, continue to the next step.
-
-When creating a new skill from scratch, always run the `init_skill.py` script. The script conveniently generates a new template skill directory that automatically includes everything a skill requires, making the skill creation process much more efficient and reliable.
+When creating a new skill from scratch, run the `init_skill.py` script. This generates a template skill directory with all required files and example resource directories.
 
 Usage:
 
@@ -166,13 +159,13 @@ When editing the (newly-generated or existing) skill, remember that the skill is
 
 #### Start with Reusable Skill Contents
 
-To begin implementation, start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files. Note that this step may require user input. For example, when implementing a `brand-guidelines` skill, the user may need to provide brand assets or templates to store in `assets/`, or documentation to store in `references/`.
-
-Also, delete any example files and directories not needed for the skill. The initialization script creates example files in `scripts/`, `references/`, and `assets/` to demonstrate structure, but most skills won't need all of them.
+- Start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files
+- Request user input if needed (e.g., brand assets for `assets/`, documentation for `references/`)
+- Delete example files and directories not needed for the skill
 
 #### Update SKILL.md
 
-**Writing Style:** Write the entire skill using **imperative/infinitive form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
+**Writing Style:** Write using **imperative form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
 
 To complete SKILL.md, answer the following questions:
 
@@ -208,10 +201,10 @@ If validation fails, the script will report the errors and exit without creating
 
 ### Step 6: Iterate
 
-After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.
+After testing, users may request improvements based on how the skill performed.
 
 **Iteration workflow:**
-1. Use the skill on real tasks
-2. Notice struggles or inefficiencies
-3. Identify how SKILL.md or bundled resources should be updated
-4. Implement changes and test again
+- Use the skill on real tasks
+- Identify struggles or inefficiencies
+- Update SKILL.md or bundled resources as needed
+- Implement changes and test again
