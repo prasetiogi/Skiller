@@ -52,6 +52,9 @@ def validate_skill(skill_path):
         # Check for angle brackets
         if '<' in description or '>' in description:
             return False, "Description cannot contain angle brackets (< or >)"
+        # Check for TODO placeholder
+        if '[TODO:' in description or '[TODO]' in description:
+            return False, "Description contains TODO placeholder - must be completed"
 
     return True, "Skill is valid!"
 
