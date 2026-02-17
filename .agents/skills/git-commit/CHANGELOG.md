@@ -5,6 +5,13 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.2] - 17 Feb 2026
+
+### Changed
+
+- Updated description to explicitly remind agent to load skill before commit
+- Incremented version to 0.0.2
+
 ## [0.0.1] - 17 Feb 2026
 
 ### Added

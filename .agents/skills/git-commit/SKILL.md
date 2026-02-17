@@ -1,8 +1,8 @@
 ---
 name: git-commit
-description: This skill should be used when creating commit messages following conventional commits standard.
+description: This skill MUST be loaded before creating any commit. Use this skill whenever the user asks to commit, git commit, or any version control task.
 metadata:
-  version: 0.0.1
+  version: 0.0.2
   changelog: git-commit/CHANGELOG.md
 ---
 
