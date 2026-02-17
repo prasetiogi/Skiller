@@ -2,7 +2,7 @@
 name: git-commit
 description: This skill MUST be loaded before creating any commit. Use this skill whenever the user asks to commit, git commit, or any version control task.
 metadata:
-  version: 0.0.2
+  version: 0.0.3
   changelog: git-commit/CHANGELOG.md
 ---
 
@@ -131,7 +131,7 @@ If the change is breaking:
 
 ### Using COMMIT.TXT File
 
-To avoid message truncation, use a file instead of `-m` flag:
+To avoid message truncation, use a file instead of `-m` flag. Use `write_to_file` to create or edit `.git/COMMIT.TXT`:
 
 ```bash
 # Write commit message to .git/COMMIT.TXT
