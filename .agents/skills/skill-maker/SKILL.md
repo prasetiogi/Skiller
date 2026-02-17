@@ -2,7 +2,7 @@
 name: skill-maker
 description: This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   changelog: skill-maker/CHANGELOG.md
 ---
 
@@ -180,6 +180,17 @@ When editing the (newly-generated or existing) skill, remember that the skill is
 #### Update SKILL.md
 
 **Writing Style:** Write using **imperative form** (verb-first instructions), not second person. Use objective, instructional language (e.g., "To accomplish X, do Y" rather than "You should do X" or "If you need to do X"). This maintains consistency and clarity for AI consumption.
+
+#### Structure Patterns
+
+Choose a structure that fits the skill's purpose:
+
+- **Workflow-Based**: Sequential processes → `## Overview → ## Workflow → ## Step 1 → ## Step 2...`
+- **Task-Based**: Tool collections → `## Overview → ## Quick Start → ## Task 1 → ## Task 2...`
+- **Reference/Guidelines**: Standards/specifications → `## Overview → ## Guidelines → ## Specs...`
+- **Capabilities-Based**: Integrated systems → `## Overview → ## Core Capabilities → ### 1. Feature...`
+
+Patterns can be mixed. Most skills combine patterns (e.g., task-based with workflow for complex operations).
 
 To complete SKILL.md, answer the following questions:
 
