@@ -5,6 +5,72 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 17 Feb 2026 22:00
+
+### Fixed
+
+- Pre-quoted description in init_skill.py templates to produce valid YAML from the start
+- Prevents agents from "fixing" YAML by adding quotes during edits
+- Fixed table style formatting in multiple files for consistent markdown rendering
+
+## [2.0.0] - 17 Feb 2026 21:07
+
+### Breaking Changes
+
+- **SKILL.md structure changed**: "About Skills" content moved to `references/skill-concepts.md`
+  - Agents expecting skill anatomy docs in SKILL.md body must now load references
+  - Structure patterns moved to `references/structure-patterns.md`
+- **init_skill.py templates simplified**: Generated SKILL.md templates are now ~70% shorter
+  - Verbose example files replaced with minimal placeholders
+  - Use `--minimal` flag for even leaner output
+
+### Added
+
+- `references/` directory with self-documentation (skill now follows its own best practices)
+- `references/skill-concepts.md` - Foundational knowledge about skills (moved from SKILL.md)
+- `references/structure-patterns.md` - Detailed structure pattern guidance with decision tree
+- `--minimal` flag to init_skill.py for creating skills without example placeholders
+- `--comprehensive` flag to quick_validate.py for quality and style checks
+
+### Changed
+
+- SKILL.md refactored to procedural-only (~40% smaller)
+  - Added Quick Reference table for common commands
+  - Added References section linking to new reference files
+- init_skill.py templates simplified:
+  - SKILL_TEMPLATE reduced from ~87 lines to ~25 lines
+  - Added minimal mode for bare-bones initialization
+- quick_validate.py enhanced:
+  - Split into validate_basic() and validate_comprehensive()
+  - Comprehensive mode checks: description quality, writing style, structure patterns, resource references
+  - Returns warnings and suggestions separately
+
+### Fixed
+
+- Skill now practices progressive disclosure principle it teaches (was violating it)
+
+## [1.4.0] - 17 Feb 2026 20:09
+
+### Added
+
+- init_skill.py now generates CHANGELOG.md file automatically
+- SKILL_TEMPLATE now includes metadata section with version and changelog fields
+
+### Changed
+
+- Simplified Structure section in template - now references skill-maker SKILL.md instead of duplicating content
+- Removed verbose "Structuring This Skill" section - replaced with concise "Structure" section
+
+## [1.3.0] - 17 Feb 2026 17:52
+
+### Added
+
+- Structure Patterns section in Step 4 with 4 common patterns:
+  - Workflow-Based for sequential processes
+  - Task-Based for tool collections
+  - Reference/Guidelines for standards/specifications
+  - Capabilities-Based for integrated systems
+
 ## [1.2.0] - 17 Feb 2026 17:23
 
 ### Changed
