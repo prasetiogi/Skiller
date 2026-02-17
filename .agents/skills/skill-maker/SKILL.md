@@ -1,8 +1,8 @@
 ---
 name: skill-maker
-description: Guide for creating effective skills. This skill should be used when creating or updating skills that extend agent capabilities with specialized knowledge, workflows, or tool integrations.
+description: This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   changelog: skill-maker/CHANGELOG.md
 ---
 
@@ -46,7 +46,21 @@ skill-name/
 
 #### SKILL.md (required)
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Specify what the skill does and when to use it. Use third-person phrasing (e.g., `This skill should be used when...` instead of `Use this skill when...`).
+**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Use this pattern:
+
+```
+This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose].
+```
+
+**Example:**
+```
+This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
+```
+
+**Key points:**
+- Use third-person phrasing (`This skill should be used when...` not `Use this skill when...`)
+- Be specific about trigger conditions
+- Include the skill's purpose
 
 #### Bundled Resources (optional)
 
