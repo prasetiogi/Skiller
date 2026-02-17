@@ -3,11 +3,14 @@
 Skill Initializer - Creates a new skill from template
 
 Usage:
-    init_skill.py <skill-name> --path <path>
+    init_skill.py <skill-name> --path <path> [--minimal]
+
+Options:
+    --minimal    Create only essential files (no example placeholders)
 
 Examples:
     init_skill.py my-new-skill --path skills/public
-    init_skill.py my-api-helper --path skills/private
+    init_skill.py my-api-helper --path skills/private --minimal
     init_skill.py custom-skill --path /custom/location
 """
 
@@ -32,58 +35,32 @@ metadata:
 
 ## Structure
 
-[TODO: Choose a structure pattern (see skill-maker SKILL.md "Structure Patterns"). Common options:
-- Workflow-Based: Sequential processes
-- Task-Based: Tool collections
-- Reference/Guidelines: Standards/specifications
-- Capabilities-Based: Integrated systems]
+[TODO: Choose a structure pattern. See skill-maker references/structure-patterns.md for guidance.]
 
-## [TODO: Replace with the first main section based on chosen structure]
+## [TODO: Main Section]
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+[TODO: Add content - code samples, decision trees, concrete examples, references to resources]
 
 ## Resources
 
-This skill includes example resource directories that demonstrate how to organize different types of bundled resources:
+{resources_section}
+"""
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
-
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
-
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
-
-**Note:** Scripts may be executed without loading into context, but can still be read for patching or environment adjustments.
-
-### references/
-Documentation and reference material intended to be loaded into context to inform the agent's process and thinking.
-
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
-
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information to reference while working.
-
-### assets/
-Files not intended to be loaded into context, but rather used within the output the agent produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
+SKILL_TEMPLATE_MINIMAL = """---
+name: {skill_name}
+description: [TODO: This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose].]
+metadata:
+  version: 0.0.0
+  changelog: {skill_name}/CHANGELOG.md
 ---
 
-**Any unneeded directories can be deleted.** Not every skill requires all three types of resources.
+# {skill_title}
+
+## Overview
+
+[TODO: 1-2 sentences explaining what this skill enables]
+
+## [TODO: Add sections based on structure pattern]
 """
 
 CHANGELOG_TEMPLATE = """# Changelog
@@ -102,87 +79,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 """
 
 EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
-"""
-Example helper script for {skill_name}
-
-This is a placeholder script that can be executed directly.
-Replace with actual implementation or delete if not needed.
-
-Example real scripts from other skills:
-- pdf/scripts/fill_fillable_fields.py - Fills PDF form fields
-- pdf/scripts/convert_pdf_to_images.py - Converts PDF pages to images
-"""
+"""Helper script for {skill_name}"""
 
 def main():
-    print("This is an example script for {skill_name}")
-    # TODO: Add actual script logic here
-    # This could be data processing, file conversion, API calls, etc.
+    # TODO: Implement script logic
+    pass
 
 if __name__ == "__main__":
     main()
 '''
 
-EXAMPLE_REFERENCE = """# Reference Documentation for {skill_title}
+EXAMPLE_REFERENCE = """# Reference for {skill_title}
 
-This is a placeholder for detailed reference documentation.
-Replace with actual reference content or delete if not needed.
-
-Example real reference docs from other skills:
-- product-management/references/communication.md - Comprehensive guide for status updates
-- product-management/references/context_building.md - Deep-dive on gathering context
-- bigquery/references/ - API references and query examples
-
-## When Reference Docs Are Useful
-
-Reference docs are ideal for:
-- Comprehensive API documentation
-- Detailed workflow guides
-- Complex multi-step processes
-- Information too lengthy for main SKILL.md
-- Content that's only needed for specific use cases
-
-## Structure Suggestions
-
-### API Reference Example
-- Overview
-- Authentication
-- Endpoints with examples
-- Error codes
-- Rate limits
-
-### Workflow Guide Example
-- Prerequisites
-- Step-by-step instructions
-- Common patterns
-- Troubleshooting
-- Best practices
+[TODO: Add reference documentation - API docs, schemas, detailed guides]
 """
 
-EXAMPLE_ASSET = """# Example Asset File
-
-This placeholder represents where asset files would be stored.
-Replace with actual asset files (templates, images, fonts, etc.) or delete if not needed.
-
-Asset files are NOT intended to be loaded into context, but rather used within
-the output Claude produces.
-
-Example asset files from other skills:
-- Brand guidelines: logo.png, slides_template.pptx
-- Frontend builder: hello-world/ directory with HTML/React boilerplate
-- Typography: custom-font.ttf, font-family.woff2
-- Data: sample_data.csv, test_dataset.json
-
-## Common Asset Types
-
-- Templates: .pptx, .docx, boilerplate directories
-- Images: .png, .jpg, .svg, .gif
-- Fonts: .ttf, .otf, .woff, .woff2
-- Boilerplate code: Project directories, starter files
-- Icons: .ico, .svg
-- Data files: .csv, .json, .xml, .yaml
-
-Note: This is a text placeholder. Actual assets can be any file type.
-"""
+EXAMPLE_ASSET_PLACEHOLDER = "# Place asset files here (templates, images, fonts, etc.)\n"
 
 
 def title_case_skill_name(skill_name):
@@ -190,13 +102,14 @@ def title_case_skill_name(skill_name):
     return ' '.join(word.capitalize() for word in skill_name.split('-'))
 
 
-def init_skill(skill_name, path):
+def init_skill(skill_name, path, minimal=False):
     """
     Initialize a new skill directory with template SKILL.md.
 
     Args:
         skill_name: Name of the skill
         path: Path where the skill directory should be created
+        minimal: If True, create only essential files
 
     Returns:
         Path to created skill directory, or None if error
@@ -206,30 +119,45 @@ def init_skill(skill_name, path):
 
     # Check if directory already exists
     if skill_dir.exists():
-        print(f"❌ Error: Skill directory already exists: {skill_dir}")
+        print(f"Error: Skill directory already exists: {skill_dir}")
         return None
 
     # Create skill directory
     try:
         skill_dir.mkdir(parents=True, exist_ok=False)
-        print(f"✅ Created skill directory: {skill_dir}")
+        print(f"Created skill directory: {skill_dir}")
     except Exception as e:
-        print(f"❌ Error creating directory: {e}")
+        print(f"Error creating directory: {e}")
         return None
 
     # Create SKILL.md from template
     skill_title = title_case_skill_name(skill_name)
-    skill_content = SKILL_TEMPLATE.format(
-        skill_name=skill_name,
-        skill_title=skill_title
-    )
+    
+    if minimal:
+        resources_section = "[TODO: Add scripts/, references/, or assets/ as needed]"
+        skill_content = SKILL_TEMPLATE_MINIMAL.format(
+            skill_name=skill_name,
+            skill_title=skill_title,
+            resources_section=resources_section
+        )
+    else:
+        resources_section = """This skill includes example resource directories. Delete unneeded directories.
+
+- **scripts/** - Executable code (Python/Bash/etc.)
+- **references/** - Documentation to load into context
+- **assets/** - Files used in output (templates, images)"""
+        skill_content = SKILL_TEMPLATE.format(
+            skill_name=skill_name,
+            skill_title=skill_title,
+            resources_section=resources_section
+        )
 
     skill_md_path = skill_dir / 'SKILL.md'
     try:
         skill_md_path.write_text(skill_content)
-        print("✅ Created SKILL.md")
+        print("Created SKILL.md")
     except Exception as e:
-        print(f"❌ Error creating SKILL.md: {e}")
+        print(f"Error creating SKILL.md: {e}")
         return None
 
     # Create CHANGELOG.md from template
@@ -242,52 +170,66 @@ def init_skill(skill_name, path):
     changelog_path = skill_dir / 'CHANGELOG.md'
     try:
         changelog_path.write_text(changelog_content)
-        print("✅ Created CHANGELOG.md")
+        print("Created CHANGELOG.md")
     except Exception as e:
-        print(f"❌ Error creating CHANGELOG.md: {e}")
+        print(f"Error creating CHANGELOG.md: {e}")
         return None
 
-    # Create resource directories with example files
+    # Create resource directories
     try:
-        # Create scripts/ directory with example script
+        # Always create directories structure (even if minimal)
         scripts_dir = skill_dir / 'scripts'
-        scripts_dir.mkdir(exist_ok=True)
-        example_script = scripts_dir / 'example.py'
-        example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
-        example_script.chmod(0o755)
-        print("✅ Created scripts/example.py")
-
-        # Create references/ directory with example reference doc
         references_dir = skill_dir / 'references'
-        references_dir.mkdir(exist_ok=True)
-        example_reference = references_dir / 'api_reference.md'
-        example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
-        print("✅ Created references/api_reference.md")
-
-        # Create assets/ directory with example asset placeholder
         assets_dir = skill_dir / 'assets'
+        
+        scripts_dir.mkdir(exist_ok=True)
+        references_dir.mkdir(exist_ok=True)
         assets_dir.mkdir(exist_ok=True)
-        example_asset = assets_dir / 'example_asset.txt'
-        example_asset.write_text(EXAMPLE_ASSET)
-        print("✅ Created assets/example_asset.txt")
+        
+        if not minimal:
+            # Create example files
+            example_script = scripts_dir / 'example.py'
+            example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
+            example_script.chmod(0o755)
+            print("Created scripts/example.py")
+
+            example_reference = references_dir / 'reference.md'
+            example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
+            print("Created references/reference.md")
+
+            example_asset = assets_dir / '.gitkeep'
+            example_asset.write_text(EXAMPLE_ASSET_PLACEHOLDER)
+            print("Created assets/ directory")
+        else:
+            print("Created scripts/, references/, assets/ directories (empty)")
+            
     except Exception as e:
-        print(f"❌ Error creating resource directories: {e}")
+        print(f"Error creating resource directories: {e}")
         return None
 
     # Print next steps
-    print(f"\n✅ Skill '{skill_name}' initialized successfully at {skill_dir}")
+    print(f"\nSkill '{skill_name}' initialized at {skill_dir}")
     print("\nNext steps:")
-    print("1. Edit SKILL.md to complete the TODO items and update the description")
+    print("1. Edit SKILL.md - complete TODO items and update description")
     print("2. Update CHANGELOG.md with initial features")
-    print("3. Customize or delete the example files in scripts/, references/, and assets/")
-    print("4. Run the validator when ready to check the skill structure")
+    if not minimal:
+        print("3. Customize or delete example files in scripts/, references/, assets/")
+    print("4. Run quick_validate.py to check skill structure when ready")
 
     return skill_dir
 
 
 def main():
-    if len(sys.argv) < 4 or sys.argv[2] != '--path':
-        print("Usage: init_skill.py <skill-name> --path <path>")
+    # Parse arguments
+    args = sys.argv[1:]
+    minimal = '--minimal' in args
+    if minimal:
+        args.remove('--minimal')
+    
+    if len(args) < 3 or args[1] != '--path':
+        print("Usage: init_skill.py <skill-name> --path <path> [--minimal]")
+        print("\nOptions:")
+        print("  --minimal    Create only essential files (no example placeholders)")
         print("\nSkill name requirements:")
         print("  - Hyphen-case identifier (e.g., 'data-analyzer')")
         print("  - Lowercase letters, digits, and hyphens only")
@@ -295,18 +237,19 @@ def main():
         print("  - Must match directory name exactly")
         print("\nExamples:")
         print("  init_skill.py my-new-skill --path skills/public")
-        print("  init_skill.py my-api-helper --path skills/private")
-        print("  init_skill.py custom-skill --path /custom/location")
+        print("  init_skill.py my-api-helper --path skills/private --minimal")
         sys.exit(1)
 
-    skill_name = sys.argv[1]
-    path = sys.argv[3]
+    skill_name = args[0]
+    path = args[2]
 
-    print(f"🚀 Initializing skill: {skill_name}")
+    print(f"Initializing skill: {skill_name}")
     print(f"   Location: {path}")
+    if minimal:
+        print("   Mode: minimal")
     print()
 
-    result = init_skill(skill_name, path)
+    result = init_skill(skill_name, path, minimal)
 
     if result:
         sys.exit(0)
