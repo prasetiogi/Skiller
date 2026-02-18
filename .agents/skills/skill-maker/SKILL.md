@@ -1,13 +1,15 @@
 ---
 name: skill-maker
-description: This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
+description: This skill guides a complete, structured skill creation workflow from gathering concrete usage examples and planning reusable contents, through initializing the skill directory and writing effective SKILL.md, to packaging and iterating based on real-world performance. This skill must be loaded (NON NEGOTIABLE) whenever user asks to create or update skills.
 metadata:
-  version: 2.0.1
+  version: 2.1.0
   changelog: skill-maker/CHANGELOG.md
 ---
 # Skill Maker
 
-This skill standardizes the skill creation process.
+## Overview
+
+This skill standardizes the skill creation process across 6 ordered steps: from understanding concrete use cases and planning reusable contents, through initializing the directory structure and writing effective SKILL.md, to packaging the skill and iterating based on real-world performance.
 
 ## Quick Reference
 
