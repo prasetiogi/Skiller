@@ -28,9 +28,13 @@ skill-name/
 |-- SKILL.md (required)
 |   |-- YAML frontmatter metadata (required)
 |   |   |-- name: (required)
-|   |   +-- description: (required)
+|   |   |-- description: (required)
+|   |   +-- metadata: (required)
+|   |       |-- version: (required)  - Semantic versioning (e.g., 1.0.0)
+|   |       +-- changelog: (required) - Relative path to CHANGELOG.md
 |   +-- Markdown instructions (required)
 +-- Bundled Resources (optional)
+    |-- CHANGELOG.md      - Version history (required alongside metadata.version)
     |-- scripts/          - Executable code (Python/Bash/etc.)
     |-- references/       - Documentation intended to be loaded into context as needed
     +-- assets/           - Files used in output (templates, icons, fonts, etc.)
@@ -41,18 +45,19 @@ skill-name/
 **Metadata Quality:** The `name` and `description` in YAML frontmatter determine when the agent will use the skill. Use this pattern:
 
 ```
-This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose].
+This skill guides a complete, [adjective] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].
 ```
 
 **Example:**
 ```
-This skill MUST be loaded before creating or updating skills. This skill should be used when the user asks to create or modify skills for extending agent capabilities with specialized knowledge, workflows, or tool integrations.
+This skill guides a complete, structured skill creation workflow from gathering concrete usage examples and planning reusable contents, through initializing the skill directory and writing effective SKILL.md, to packaging and iterating based on real-world performance. This skill must be loaded (NON NEGOTIABLE) whenever user asks to create or update skills.
 ```
 
 **Key points:**
-- Use third-person phrasing (`This skill should be used when...` not `Use this skill when...`)
-- Be specific about trigger conditions
-- Include the skill's purpose
+- Sentence 1 describes the end-to-end journey (from → through → to) so the agent understands the full scope before loading the skill
+- Sentence 2 is the enforcement trigger — use `(NON NEGOTIABLE)` to signal priority
+- Be specific and concrete in the journey description — avoid vague terms like "manage" or "handle"
+- Keep trigger conditions concise; end with a catch-all (e.g., "or any [domain]-related task")
 
 ### Bundled Resources (optional)
 

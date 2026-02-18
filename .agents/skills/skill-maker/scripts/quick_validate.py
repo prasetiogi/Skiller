@@ -51,6 +51,12 @@ def validate_basic(skill_path):
         return False, "Missing 'name' in frontmatter", {}
     if 'description:' not in frontmatter:
         return False, "Missing 'description' in frontmatter", {}
+    if 'metadata:' not in frontmatter:
+        return False, "Missing 'metadata' block in frontmatter", {}
+    if 'version:' not in frontmatter:
+        return False, "Missing 'metadata.version' in frontmatter", {}
+    if 'changelog:' not in frontmatter:
+        return False, "Missing 'metadata.changelog' in frontmatter", {}
     
     # Extract name for validation
     name_match = re.search(r'name:\s*(.+)', frontmatter)
@@ -61,6 +67,13 @@ def validate_basic(skill_path):
             return False, f"Name '{name}' should be hyphen-case (lowercase letters, digits, and hyphens only)", {}
         if name.startswith('-') or name.endswith('-') or '--' in name:
             return False, f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens", {}
+
+    # Extract and validate metadata.version (semver format)
+    version_match = re.search(r'version:\s*(.+)', frontmatter)
+    if version_match:
+        version = version_match.group(1).strip()
+        if not re.match(r'^\d+\.\d+\.\d+$', version):
+            return False, f"metadata.version '{version}' must follow semantic versioning (e.g., 1.0.0)", {}
 
     # Extract and validate description
     desc_match = re.search(r'description:\s*(.+)', frontmatter)
@@ -108,7 +121,10 @@ def validate_comprehensive(skill_path, content, frontmatter):
         body = body_match.group(1)
         
         # Check for second-person pronouns (should use imperative form)
-        second_person = re.findall(r'\b(you|your|yours|you\'ll|you\'d)\b', body, re.IGNORECASE)
+        # Strip quoted content (inline double-quoted strings and blockquotes) before checking
+        body_stripped = re.sub(r'"[^"]*"', '', body, flags=re.MULTILINE)
+        body_stripped = re.sub(r'^\s*>.*', '', body_stripped, flags=re.MULTILINE)
+        second_person = re.findall(r'\b(you|your|yours|you\'ll|you\'d)\b', body_stripped, re.IGNORECASE)
         if second_person:
             issues.append(('info', f"Found {len(second_person)} second-person pronoun(s) - consider using imperative form instead"))
         
@@ -125,10 +141,10 @@ def validate_comprehensive(skill_path, content, frontmatter):
         issues.append(('info', "Consider adding an 'Overview' section for clarity"))
     
     # Check for common structure patterns
-    has_workflow = any('step' in s.lower() or 'workflow' in s.lower() for s in sections)
-    has_tasks = any('task' in s.lower() or 'quick start' in s.lower() for s in sections)
+    has_workflow = any('step' in s.lower() or 'workflow' in s.lower() or 'process' in s.lower() for s in sections)
+    has_tasks = any('task' in s.lower() or 'quick start' in s.lower() or 'quick reference' in s.lower() for s in sections)
     has_capabilities = any('capabilit' in s.lower() or 'feature' in s.lower() for s in sections)
-    has_guidelines = any('guideline' in s.lower() or 'standard' in s.lower() or 'spec' in s.lower() for s in sections)
+    has_guidelines = any('guideline' in s.lower() or 'standard' in s.lower() or 'spec' in s.lower() or 'reference' in s.lower() for s in sections)
     
     if not (has_workflow or has_tasks or has_capabilities or has_guidelines):
         issues.append(('info', "Skill doesn't follow common structure patterns - see skill-maker references/structure-patterns.md"))

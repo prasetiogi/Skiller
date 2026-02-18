@@ -5,6 +5,21 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 19 Feb 2026 01:40
+
+### Added
+
+- Overview section to SKILL.md summarizing the 6-step workflow at a glance
+- `metadata.version` and `metadata.changelog` documented as required fields in skill anatomy tree (`references/skill-concepts.md`)
+- `quick_validate.py`: validation for `metadata` block, `metadata.version` (semver format `\d+\.\d+\.\d+`), and `metadata.changelog` fields
+
+### Changed
+
+- Description pattern updated to commit-pro journey formula in SKILL.md, `references/skill-concepts.md` (Metadata Quality section + example), and both `init_skill.py` templates:
+  - New formula: "This skill guides a complete, [adj] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [triggers]."
+- `quick_validate.py`: fixed second-person false positives — inline double-quoted strings now stripped before pronoun check
+- `quick_validate.py`: expanded structure pattern recognition to include `process`, `quick reference`, and `reference` keywords
+
 ## [2.0.1] - 17 Feb 2026 22:00
 
 ### Fixed

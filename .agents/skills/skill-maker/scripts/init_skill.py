@@ -21,7 +21,7 @@ from datetime import datetime
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
-description: "[TODO: This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose]. Use third-person phrasing and be specific about trigger conditions.]"
+description: "[TODO: This skill guides a complete, [adjective] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
 metadata:
   version: 0.0.0
   changelog: {skill_name}/CHANGELOG.md
@@ -48,7 +48,7 @@ metadata:
 
 SKILL_TEMPLATE_MINIMAL = """---
 name: {skill_name}
-description: "[TODO: This skill MUST be loaded before [action]. This skill should be used when [trigger conditions] for [purpose].]"
+description: "[TODO: This skill guides a complete, [adjective] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
 metadata:
   version: 0.0.0
   changelog: {skill_name}/CHANGELOG.md
