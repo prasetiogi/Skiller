@@ -243,6 +243,12 @@ def main():
     skill_name = args[0]
     path = args[2]
 
+    # Validate skill name length
+    if len(skill_name) > 40:
+        print(f"Error: Skill name exceeds 40 characters ({len(skill_name)} chars)")
+        print("  Use a shorter name or abbreviate")
+        sys.exit(1)
+
     print(f"Initializing skill: {skill_name}")
     print(f"   Location: {path}")
     if minimal:

@@ -67,6 +67,9 @@ def validate_basic(skill_path):
             return False, f"Name '{name}' should be hyphen-case (lowercase letters, digits, and hyphens only)", {}
         if name.startswith('-') or name.endswith('-') or '--' in name:
             return False, f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens", {}
+        # Check name length (max 40 characters)
+        if len(name) > 40:
+            return False, f"Name '{name}' exceeds 40 characters ({len(name)} chars) - use a shorter name", {}
 
     # Extract and validate metadata.version (semver format)
     version_match = re.search(r'version:\s*(.+)', frontmatter)
