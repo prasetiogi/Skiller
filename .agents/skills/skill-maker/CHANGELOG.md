@@ -5,6 +5,26 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 20 Feb 2026 19:55
+
+### Added
+
+- `references/troubleshooting.md` - Common issues and solutions for skill creation
+- Anti-Patterns section to `references/skill-concepts.md` with 10 common mistakes to avoid
+- Mode selection guidance to SKILL.md Step 3 (regular vs minimal mode)
+- `--comprehensive` flag and `--minimal` mode to Quick Reference table in SKILL.md
+
+### Changed
+
+- `scripts/package_skill.py`: Added `sys.path` handling for cross-directory execution
+- `scripts/init_skill.py`: Added name length validation (max 40 characters, enforced)
+- `scripts/quick_validate.py`: Added name length validation (max 40 characters)
+
+### Fixed
+
+- Package script now works when run from directories other than the script location
+- Name length requirement (max 40 chars) is now enforced, not just documented
+
 ## [2.1.0] - 19 Feb 2026 01:40
 
 ### Added

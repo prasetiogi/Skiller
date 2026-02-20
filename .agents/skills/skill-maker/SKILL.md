@@ -2,7 +2,7 @@
 name: skill-maker
 description: This skill guides a complete, structured skill creation workflow from gathering concrete usage examples and planning reusable contents, through initializing the skill directory and writing effective SKILL.md, to packaging and iterating based on real-world performance. This skill must be loaded (NON NEGOTIABLE) whenever user asks to create or update skills.
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   changelog: skill-maker/CHANGELOG.md
 ---
 # Skill Maker
@@ -14,11 +14,13 @@ This skill standardizes the skill creation process across 6 ordered steps: from 
 ## Quick Reference
 
 
-| Task                 | Command                                                        |
-| -------------------- | -------------------------------------------------------------- |
-| Initialize new skill | `scripts/init_skill.py <skill-name> --path <output-directory>` |
-| Validate skill       | `scripts/quick_validate.py <skill-directory>`                  |
-| Package skill        | `scripts/package_skill.py <skill-folder> [output-dir]`         |
+| Task                  | Command                                                                     |
+| --------------------- | --------------------------------------------------------------------------- |
+| Initialize new skill  | `scripts/init_skill.py <skill-name> --path <output-directory>`              |
+| Initialize (minimal)  | `scripts/init_skill.py <skill-name> --path <output-directory> --minimal`    |
+| Validate skill        | `scripts/quick_validate.py <skill-directory>`                               |
+| Validate (thorough)   | `scripts/quick_validate.py <skill-directory> --comprehensive`               |
+| Package skill         | `scripts/package_skill.py <skill-folder> [output-dir]`                      |
 
 ## References
 
@@ -77,6 +79,11 @@ Run the `init_skill.py` script to generate a template skill directory:
 ```bash
 scripts/init_skill.py <skill-name> --path <output-directory>
 ```
+
+**Mode Selection:**
+
+- **Regular mode** (default): Creates example files in each directory - useful for learning skill structure
+- **Minimal mode** (`--minimal` flag): Creates empty directories only - useful for experienced skill creators
 
 The script creates:
 
