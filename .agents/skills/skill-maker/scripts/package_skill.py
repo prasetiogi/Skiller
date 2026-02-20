@@ -13,6 +13,9 @@ Example:
 import sys
 import zipfile
 from pathlib import Path
+
+# Add parent directory to path for imports when running from different directory
+sys.path.insert(0, str(Path(__file__).parent))
 from quick_validate import validate_skill
 
 
