@@ -5,6 +5,27 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 21 Feb 2026 05:20
+
+### Added
+
+- Step 0 (Pre-flight) to SKILL.md: create vs update vs split decision + dependency capture
+- Step 5.5 (Functional smoke test) to SKILL.md
+- `references/testing-template.md` - functional test checklist + test case template
+- `references/skill-concepts.md`: create vs update vs split guidance
+- `references/troubleshooting.md`: cross-platform paths, unclear feedback, external configuration guidance
+
+### Changed
+
+- SKILL.md: added per-step "Done when" criteria and expanded Step 2 methodology + Step 4 checklist
+- `scripts/package_skill.py`: added `--comprehensive` validation option and per-file progress counter
+
+### Fixed
+
+- SKILL.md references now consistently use forward slashes
+- `scripts/init_skill.py`: now enforces hyphen-case skill names (not just max length)
+- `scripts/quick_validate.py`: now validates `metadata.changelog` existence and warns on backslash paths
+
 ## [2.2.0] - 20 Feb 2026 19:55
 
 ### Added

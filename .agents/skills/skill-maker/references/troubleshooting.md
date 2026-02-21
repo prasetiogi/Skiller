@@ -98,6 +98,19 @@ chmod +x scripts/package_skill.py
 chmod +x scripts/quick_validate.py
 ```
 
+### Cross-platform path issues (Windows vs Linux)
+
+**Symptoms:**
+
+- Links in SKILL.md use backslashes (e.g., `references\foo.md`) and fail in some environments
+- Scripts behave differently across OSes (path joins, line endings)
+
+**Fixes:**
+
+- Use **forward slashes** in markdown links: `references/foo.md`
+- In Python scripts, use `pathlib.Path` for all path operations
+- If a script must print paths, print resolved paths for clarity
+
 ## Content Issues
 
 ### Skill not triggering when expected
@@ -146,6 +159,39 @@ chmod +x scripts/quick_validate.py
 3. **Missing error handling guidance**
    - Add troubleshooting section to SKILL.md
    - Document common failure modes
+
+### User feedback is unclear or contradictory
+
+**Symptoms:**
+
+- Requirements keep shifting
+- The user cannot provide concrete examples
+
+**Solution:**
+
+- Propose 3–5 representative prompts and ask the user to confirm which are correct.
+- Reduce ambiguity with forced choices:
+  - "Should this skill focus on A, B, or both?"
+  - "Which output format is required: X or Y?"
+- Capture constraints early (inputs, outputs, non-goals) and treat them as acceptance criteria.
+
+### Skill depends on external configuration (API keys, credentials, MCP tools)
+
+**Best practices:**
+
+- Never hardcode secrets in a skill.
+- Document required environment variables in SKILL.md.
+- Provide safe defaults / failure messaging (e.g., "If API key missing, stop and request it").
+- If the skill depends on another skill, document that dependency explicitly in SKILL.md.
+
+## Expected Script Outputs (Typical)
+
+Use these as a sanity check when running tooling.
+
+- `init_skill.py ...` prints "Created SKILL.md" and "Created CHANGELOG.md" and ends with "Skill '<name>' initialized".
+- `quick_validate.py <dir>` prints "Skill is valid!" on success.
+- `quick_validate.py <dir> --comprehensive` may print "Warnings:" and/or "Suggestions:".
+- `package_skill.py <dir>` prints "Validating skill..." then "Successfully packaged".
 
 ## Packaging Issues
 

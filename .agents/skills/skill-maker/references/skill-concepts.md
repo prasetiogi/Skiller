@@ -168,6 +168,33 @@ Avoid these common mistakes when creating skills:
 
 **Why it matters:** Broad skills are harder to trigger correctly and harder to maintain. Focused skills are more effective.
 
+## When to Create, Update, or Split
+
+Use these rules of thumb to choose the right change.
+
+### Create a new skill
+
+- The same domain workflow is requested repeatedly.
+- Trigger phrases are stable and clearly separable from other skills.
+- The skill can be described as one coherent journey (from → through → to).
+
+### Update an existing skill
+
+- The skill already triggers correctly, but instructions/resources are incomplete or inefficient.
+- New requirements are within the same domain boundary.
+- The skill’s structure pattern still fits (workflow/task/guidelines/capabilities).
+
+### Split a skill
+
+Split when triggering or maintenance becomes unreliable.
+
+- **Triggering becomes ambiguous**: >3 distinct trigger groups that rarely overlap.
+- **Multiple personas**: different user types need different workflows.
+- **Workflow sprawl**: a single workflow exceeds ~8 steps or contains multiple unrelated branches.
+- **Mixed domains/tools**: unrelated formats/systems in one skill (e.g., “pdf + excel + images + json”).
+
+Split by **domain boundary** (preferred) or by **operation type** (e.g., “ingestion” vs “reporting”).
+
 ### 7. Missing Validation
 
 **Anti-pattern:** No verification that the skill works.
