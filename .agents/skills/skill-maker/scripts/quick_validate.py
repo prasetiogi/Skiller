@@ -33,7 +33,7 @@ def validate_basic(skill_path):
         return False, "SKILL.md not found", {}
     
     # Read content
-    content = skill_md.read_text()
+    content = skill_md.read_text(encoding='utf-8', errors='replace')
     
     # Check YAML frontmatter
     if not content.startswith('---'):
@@ -51,12 +51,6 @@ def validate_basic(skill_path):
         return False, "Missing 'name' in frontmatter", {}
     if 'description:' not in frontmatter:
         return False, "Missing 'description' in frontmatter", {}
-    if 'metadata:' not in frontmatter:
-        return False, "Missing 'metadata' block in frontmatter", {}
-    if 'version:' not in frontmatter:
-        return False, "Missing 'metadata.version' in frontmatter", {}
-    if 'changelog:' not in frontmatter:
-        return False, "Missing 'metadata.changelog' in frontmatter", {}
     
     # Extract name for validation
     name_match = re.search(r'name:\s*(.+)', frontmatter)
@@ -153,6 +147,23 @@ def validate_comprehensive(skill_path, content, frontmatter):
         if len(description) < 50:
             issues.append(('warning', f"Description may be too brief ({len(description)} chars) - consider adding more detail"))
 
+    
+    # ----------------------------
+    # 1.5) Frontmatter keys hygiene (warning)
+    # ----------------------------
+    # This is a light, spec-ish check: warn on unexpected top-level keys.
+    allowed_keys = {
+        'name', 'description', 'metadata', 'requires', 'tags', 'triggers', 'trigger',
+        'tools', 'tool', 'author', 'license'
+    }
+    top_keys = []
+    for line in frontmatter.splitlines():
+        if re.match(r'^[A-Za-z0-9_-]+:\s*', line) and not line.startswith(' '):
+            k = line.split(':', 1)[0].strip()
+            top_keys.append(k)
+    unknown = sorted({k for k in top_keys if k not in allowed_keys})
+    if unknown:
+        issues.append(('warning', f"Frontmatter contains unknown key(s): {', '.join(unknown)} (allowed keys: {', '.join(sorted(allowed_keys))})"))
     # ----------------------------
     # 2) Structure / required sections (SKILL.md body)
     # ----------------------------
@@ -175,11 +186,11 @@ def validate_comprehensive(skill_path, content, frontmatter):
         issues.append(('error', "SKILL.md should include at least one section beyond '## Overview'"))
 
     has_pattern = any(
-        any(k in s for k in ['workflow', 'tasks', 'guidelines', 'reference', 'capabilit', 'structure'])
+        any(k in s for k in ['workflow', 'tasks', 'guidelines', 'reference', 'capabilit', 'structure', 'how to', 'usage', 'process'])
         for s in sections
     )
     if not has_pattern:
-        issues.append(('warning', "Skill doesn't show a recognizable structure pattern in headings (workflow/tasks/guidelines/capabilities/structure)"))
+        issues.append(('error', "Missing a recognizable structure section in headings (add a section like '## Workflow', '## Tasks', '## Guidelines', '## Capabilities', or '## Structure')."))
 
     # ----------------------------
     # 3) Placeholder / TODO gate (must be removed before packaging)
@@ -283,6 +294,22 @@ def validate_skill(skill_path, comprehensive=False):
                 return True, f"Validation passed, but {len(warnings)} warning(s) found:\n" + "\n".join(lines)
 
             return True, f"Validation passed with {len(infos)} suggestion(s):\n" + "\n".join(lines)
+    # Optional metadata checks (recommended, not required)
+    # If provided, validate version is semver-ish and changelog path exists.
+    meta_version_match = re.search(r'(?m)^\s*version:\s*([0-9]+\.[0-9]+\.[0-9]+)', frontmatter)
+    if meta_version_match:
+        ver = meta_version_match.group(1).strip()
+        if not re.match(r'^\d+\.\d+\.\d+$', ver):
+            return False, f"Invalid metadata.version '{ver}' (expected semver like 1.2.3)", {}
+    # Validate changelog path if present
+    changelog_match = re.search(r'(?m)^\s*changelog:\s*(.+)', frontmatter)
+    if changelog_match:
+        changelog_path = changelog_match.group(1).strip().strip('"\'')
+        # Allow relative paths inside the skill folder
+        cl = skill_path / Path(changelog_path)
+        if not cl.exists():
+            return False, f"metadata.changelog points to missing file: {changelog_path}", {}
+    
 
     return True, "Skill is valid!"
 

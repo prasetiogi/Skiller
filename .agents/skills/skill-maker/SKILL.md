@@ -2,14 +2,17 @@
 name: skill-maker
 description: This skill guides a complete, structured skill creation workflow from gathering concrete usage examples and planning reusable contents, through initializing the skill directory and writing effective SKILL.md, to packaging and iterating based on real-world performance. This skill must be loaded (NON NEGOTIABLE) whenever user asks to create or update skills.
 metadata:
-  version: 2.4.0
+  version: 2.5.0
   changelog: skill-maker/CHANGELOG.md
 ---
 # Skill Maker
 
 ## Overview
 
-This skill standardizes the skill creation process across 6 core steps, with a pre-flight decision step (create vs update vs split) and a functional smoke-test gate before packaging.
+This skill standardizes skill creation with a pre-flight decision (create/update/split) and a quality gate (validate + smoke test) before packaging.
+
+**Conciseness rule:** keep SKILL.md execution-first (commands, checklists, decision points). Move background theory to `references/`.
+
 
 ## Quick Reference
 
@@ -22,6 +25,11 @@ This skill standardizes the skill creation process across 6 core steps, with a p
 | Validate (thorough)   | `scripts/quick_validate.py <skill-directory> --comprehensive`               |
 | Smoke test (auto)     | `scripts/smoke_test.py <skill-directory>`                                  |
 | Package skill         | `scripts/package_skill.py <skill-folder> [output-dir] [--comprehensive]`    |
+
+## External Dependencies
+
+- None. This meta-skill only provides local scripts and references.
+- For the *target skill* you are building, capture any API keys, MCP tools, or OS-specific paths in its own **External Dependencies** section.
 
 ## References
 
@@ -58,16 +66,12 @@ Skip this step only when the skill's usage patterns are already clearly understo
 
 Understand concrete examples of how the skill will be used. This can come from direct user examples or generated examples validated with user feedback.
 
-For example, when building an image-editor skill, relevant questions include:
+Example questions to elicit concrete prompts:
 
-- "What functionality should the image-editor skill support? Editing, rotating, anything else?"
-- "Can you give some examples of how this skill would be used?"
-- "I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?"
-- "What would a user say that should trigger this skill?"
+- What are 3–5 example user prompts that should trigger this skill?
+- What outputs count as success for each prompt?
+- What inputs/constraints vary (file types, auth, tools, OS paths)?
 
-To prevent overwhelming users, ask questions incrementally rather than all at once.
-
-Conclude this step when the skill's functionality is clearly defined.
 
 **If concrete examples are missing:** propose 3–5 representative example prompts, then validate them with the user. Keep only examples the user confirms.
 
@@ -135,9 +139,7 @@ After initialization, customize or remove the generated files as needed.
 
 ### Step 4: Edit the Skill
 
-When editing the skill, remember that it is being created for another agent instance to use. Focus on information that would be beneficial and non-obvious to the agent.
-
-**Definition of done (high level):** another agent can follow SKILL.md end-to-end without asking for missing information.
+**Definition of done:** a fresh agent can follow SKILL.md end-to-end without asking for missing information.
 
 #### Start with Reusable Skill Contents
 
@@ -171,42 +173,36 @@ To complete SKILL.md, answer:
 - Add at least one **verification** step (expected output, invariants, or “success criteria”).
 - Add at least one **failure mode** and what to do next (or link to troubleshooting).
 
-### Step 5: Packaging a Skill
+### Step 5: Validate, Smoke Test, and Package
 
-Once ready, package the skill into a distributable zip file. The packaging script validates automatically:
+Run the quality gate *before* distribution.
+
+1) Validate (comprehensive):
 
 ```bash
-scripts/package_skill.py <path/to/skill-folder> [output-directory] [--comprehensive]
+scripts/quick_validate.py <path/to/skill-folder> --comprehensive
 ```
 
-The packaging script:
-
-1. **Validates** the skill: frontmatter format, required fields, naming conventions, description quality
-2. **Packages** into a zip file named after the skill (e.g., `my-skill.zip`)
-
-If validation fails, fix errors and run again.
-
-**Done when:** `quick_validate.py --comprehensive` passes with no warnings (or warnings explicitly accepted).
-
-### Step 5.5: Test the Skill (Functional Smoke Test)
-
-Before packaging for distribution, run a lightweight functional test using 2–3 representative use cases.
-
-1) Run the automated smoke gate:
+2) Run the automated smoke gate:
 
 ```bash
 scripts/smoke_test.py <path/to/skill-folder>
 ```
 
-2) Then do a manual run:
+3) Package:
 
-- Use a **fresh agent context** (simulate a new agent loading the skill).
-- Run the cases end-to-end and verify outputs match expectations.
-- Record failures and convert them into improvements for Step 6.
+```bash
+scripts/package_skill.py <path/to/skill-folder> [output-directory]
+```
 
-Use the template in `references/testing-template.md`.
+Notes:
+- `package_skill.py` always runs comprehensive validation before zipping.
+- Treat warnings as actionable unless you explicitly accept them.
+
+**Done when:** validation passes, smoke gate runs, and the packaged zip is created.
 
 ### Step 6: Iterate
+ Iterate
 
 After testing, users may request improvements based on how the skill performed.
 

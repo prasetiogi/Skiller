@@ -32,12 +32,15 @@ metadata:
 
 ## Overview
 
-TODO: Replace with 1–2 sentences explaining what this skill enables.
+This skill enables: <one-sentence capability summary>. Replace this line with a concrete summary.
 
 ## When to Use
 
-- Trigger phrases (examples): TODO
-- Out of scope: TODO
+- Trigger phrases (examples):
+  - "<example trigger prompt 1>"
+  - "<example trigger prompt 2>"
+- Out of scope (examples):
+  - "<example out-of-scope prompt>"
 
 ## External Dependencies
 
@@ -55,7 +58,7 @@ Choose ONE pattern and structure the rest of the doc accordingly (see skill-make
 
 ## Main Content
 
-TODO: Add the actual workflow/tasks/guidelines/capabilities, including:
+Add the actual workflow/tasks/guidelines/capabilities, including:
 - 2+ concrete example prompts
 - at least 1 verification step (expected output / invariants / success criteria)
 - at least 1 failure mode + what to do next
@@ -77,7 +80,7 @@ metadata:
 
 ## Overview
 
-TODO: Replace with 1–2 sentences explaining what this skill enables.
+This skill enables: <one-sentence capability summary>. Replace this line with a concrete summary.
 
 ## External Dependencies
 
@@ -86,7 +89,7 @@ TODO: Replace with 1–2 sentences explaining what this skill enables.
 
 ## Main Content
 
-TODO: Add sections based on the chosen structure pattern.
+Add sections based on the chosen structure pattern.
 """
 
 CHANGELOG_TEMPLATE = """# Changelog
@@ -101,7 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial release of {skill_name} skill
-- [TODO: Add initial features/capabilities]
+- Initial scaffold
 """
 
 EXAMPLE_SCRIPT = '''#!/usr/bin/env python3
@@ -117,7 +120,7 @@ if __name__ == "__main__":
 
 EXAMPLE_REFERENCE = """# Reference for {skill_title}
 
-[TODO: Add reference documentation - API docs, schemas, detailed guides]
+Add reference documentation here (API docs, schemas, detailed guides).
 """
 
 EXAMPLE_ASSET_PLACEHOLDER = "# Place asset files here (templates, images, fonts, etc.)\n"
@@ -160,7 +163,7 @@ def init_skill(skill_name, path, minimal=False):
     skill_title = title_case_skill_name(skill_name)
     
     if minimal:
-        resources_section = "[TODO: Add scripts/, references/, or assets/ as needed]"
+        resources_section = "Add `scripts/`, `references/`, and/or `assets/` as needed. Delete unused directories."
         skill_content = SKILL_TEMPLATE_MINIMAL.format(
             skill_name=skill_name,
             skill_title=skill_title,

@@ -5,6 +5,19 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 21 Feb 2026 07:10
+
+### Added
+- Frontmatter key hygiene (warn on unknown top-level keys) in `scripts/quick_validate.py`
+
+### Changed
+- SKILL.md: leaner, execution-first wording; merged Step 5 + 5.5 into a single "Validate, Smoke Test, and Package" gate
+- `scripts/quick_validate.py`: metadata fields are now recommended (optional), not required; stronger structure heading gate
+- `scripts/init_skill.py`: reduced TODO placeholder density (keeps a single required description placeholder)
+
+### Fixed
+- Packaging artifacts: removed accidental `__pycache__/` from the distributed skill bundle
+
 ## [2.4.0] - 21 Feb 2026 06:15
 
 ### Added
