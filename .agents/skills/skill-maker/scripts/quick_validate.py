@@ -24,7 +24,7 @@ def validate_basic(skill_path):
     
     Returns: (valid: bool, message: str, details: dict)
     """
-    skill_path = Path(skill_path)
+    skill_path = Path(skill_path).resolve()
     issues = []
     
     # Check SKILL.md exists
@@ -89,6 +89,16 @@ def validate_basic(skill_path):
         if '[TODO:' in description or '[TODO]' in description:
             return False, "Description contains TODO placeholder - must be completed", {}
 
+    # Validate metadata.changelog path exists (relative to the parent of the skill directory)
+    changelog_match = re.search(r'changelog:\s*(.+)', frontmatter)
+    if changelog_match:
+        changelog_rel = changelog_match.group(1).strip().strip('"').strip("'")
+        if '\\' in changelog_rel:
+            return False, f"metadata.changelog '{changelog_rel}' should use forward slashes (/)", {}
+        changelog_path = skill_path.parent / changelog_rel
+        if not changelog_path.exists():
+            return False, f"metadata.changelog '{changelog_rel}' not found at: {changelog_path}", {}
+
     return True, "Basic validation passed", {'frontmatter': frontmatter, 'content': content}
 
 
@@ -99,7 +109,7 @@ def validate_comprehensive(skill_path, content, frontmatter):
     Returns: list of (severity, message) tuples
     """
     issues = []
-    skill_path = Path(skill_path)
+    skill_path = Path(skill_path).resolve()
     
     # 1. Check description quality
     desc_match = re.search(r'description:\s*(.+)', frontmatter)
@@ -174,6 +184,10 @@ def validate_comprehensive(skill_path, content, frontmatter):
     changelog = skill_path / 'CHANGELOG.md'
     if not changelog.exists():
         issues.append(('info', "No CHANGELOG.md found - consider adding one for version tracking"))
+
+    # 7. Cross-platform path hygiene (prefer forward slashes in markdown)
+    if 'references\\' in content or 'scripts\\' in content or 'assets\\' in content:
+        issues.append(('warning', "Found Windows-style backslashes in paths (e.g., 'references\\...') - prefer forward slashes (/)"))
     
     return issues
 

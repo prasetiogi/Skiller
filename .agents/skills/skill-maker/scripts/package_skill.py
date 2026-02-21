@@ -3,11 +3,12 @@
 Skill Packager - Creates a distributable zip file of a skill folder
 
 Usage:
-    python utils/package_skill.py <path/to/skill-folder> [output-directory]
+    package_skill.py <path/to/skill-folder> [output-directory] [--comprehensive]
 
 Example:
-    python utils/package_skill.py skills/public/my-skill
-    python utils/package_skill.py skills/public/my-skill ./dist
+    package_skill.py skills/public/my-skill
+    package_skill.py skills/public/my-skill ./dist
+    package_skill.py skills/public/my-skill ./dist --comprehensive
 """
 
 import sys
@@ -19,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from quick_validate import validate_skill
 
 
-def package_skill(skill_path, output_dir=None):
+def package_skill(skill_path, output_dir=None, comprehensive=False):
     """
     Package a skill folder into a zip file.
 
@@ -49,7 +50,7 @@ def package_skill(skill_path, output_dir=None):
 
     # Run validation before packaging
     print("🔍 Validating skill...")
-    valid, message = validate_skill(skill_path)
+    valid, message = validate_skill(skill_path, comprehensive=comprehensive)
     if not valid:
         print(f"❌ Validation failed: {message}")
         print("   Please fix the validation errors before packaging.")
@@ -68,14 +69,24 @@ def package_skill(skill_path, output_dir=None):
 
     # Create the zip file
     try:
+        def should_include(p: Path) -> bool:
+            # Exclude common non-source artifacts
+            if '__pycache__' in p.parts:
+                return False
+            if p.suffix in {'.pyc', '.pyo'}:
+                return False
+            if p.name in {'.DS_Store'}:
+                return False
+            return True
+
+        files = [p for p in skill_path.rglob('*') if p.is_file() and should_include(p)]
+        total = len(files)
         with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            # Walk through the skill directory
-            for file_path in skill_path.rglob('*'):
-                if file_path.is_file():
-                    # Calculate the relative path within the zip
-                    arcname = file_path.relative_to(skill_path.parent)
-                    zipf.write(file_path, arcname)
-                    print(f"  Added: {arcname}")
+            for i, file_path in enumerate(files, start=1):
+                # Calculate the relative path within the zip (includes the skill folder name)
+                arcname = file_path.relative_to(skill_path.parent)
+                zipf.write(file_path, arcname)
+                print(f"  Added ({i}/{total}): {arcname}")
 
         print(f"\n✅ Successfully packaged skill to: {zip_filename}")
         return zip_filename
@@ -86,22 +97,31 @@ def package_skill(skill_path, output_dir=None):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python utils/package_skill.py <path/to/skill-folder> [output-directory]")
+    args = sys.argv[1:]
+    comprehensive = '--comprehensive' in args
+    if comprehensive:
+        args.remove('--comprehensive')
+
+    if len(args) < 1:
+        print("Usage: package_skill.py <path/to/skill-folder> [output-directory] [--comprehensive]")
         print("\nExample:")
-        print("  python utils/package_skill.py skills/public/my-skill")
-        print("  python utils/package_skill.py skills/public/my-skill ./dist")
+        print("  package_skill.py skills/public/my-skill")
+        print("  package_skill.py skills/public/my-skill ./dist")
+        print("  package_skill.py skills/public/my-skill ./dist --comprehensive")
         sys.exit(1)
 
-    skill_path = sys.argv[1]
-    output_dir = sys.argv[2] if len(sys.argv) > 2 else None
+    skill_path = args[0]
+    output_dir = args[1] if len(args) > 1 else None
 
     print(f"📦 Packaging skill: {skill_path}")
     if output_dir:
         print(f"   Output directory: {output_dir}")
     print()
 
-    result = package_skill(skill_path, output_dir)
+    if comprehensive:
+        print("   Validation: comprehensive")
+
+    result = package_skill(skill_path, output_dir, comprehensive=comprehensive)
 
     if result:
         sys.exit(0)

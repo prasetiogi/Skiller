@@ -17,6 +17,7 @@ Examples:
 import sys
 from pathlib import Path
 from datetime import datetime
+import re
 
 
 SKILL_TEMPLATE = """---
@@ -247,6 +248,14 @@ def main():
     if len(skill_name) > 40:
         print(f"Error: Skill name exceeds 40 characters ({len(skill_name)} chars)")
         print("  Use a shorter name or abbreviate")
+        sys.exit(1)
+
+    # Validate skill name format (hyphen-case)
+    if not re.match(r'^[a-z0-9-]+$', skill_name):
+        print(f"Error: Skill name '{skill_name}' should be hyphen-case (lowercase letters, digits, and hyphens only)")
+        sys.exit(1)
+    if skill_name.startswith('-') or skill_name.endswith('-') or '--' in skill_name:
+        print(f"Error: Skill name '{skill_name}' cannot start/end with hyphen or contain consecutive hyphens")
         sys.exit(1)
 
     print(f"Initializing skill: {skill_name}")
