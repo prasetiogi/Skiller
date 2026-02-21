@@ -2,7 +2,7 @@
 name: skill-maker
 description: This skill guides a complete, structured skill creation workflow from gathering concrete usage examples and planning reusable contents, through initializing the skill directory and writing effective SKILL.md, to packaging and iterating based on real-world performance. This skill must be loaded (NON NEGOTIABLE) whenever user asks to create or update skills.
 metadata:
-  version: 2.3.0
+  version: 2.4.0
   changelog: skill-maker/CHANGELOG.md
 ---
 # Skill Maker
@@ -20,6 +20,7 @@ This skill standardizes the skill creation process across 6 core steps, with a p
 | Initialize (minimal)  | `scripts/init_skill.py <skill-name> --path <output-directory> --minimal`    |
 | Validate skill        | `scripts/quick_validate.py <skill-directory>`                               |
 | Validate (thorough)   | `scripts/quick_validate.py <skill-directory> --comprehensive`               |
+| Smoke test (auto)     | `scripts/smoke_test.py <skill-directory>`                                  |
 | Package skill         | `scripts/package_skill.py <skill-folder> [output-dir] [--comprehensive]`    |
 
 ## References
@@ -190,6 +191,14 @@ If validation fails, fix errors and run again.
 ### Step 5.5: Test the Skill (Functional Smoke Test)
 
 Before packaging for distribution, run a lightweight functional test using 2–3 representative use cases.
+
+1) Run the automated smoke gate:
+
+```bash
+scripts/smoke_test.py <path/to/skill-folder>
+```
+
+2) Then do a manual run:
 
 - Use a **fresh agent context** (simulate a new agent loading the skill).
 - Run the cases end-to-end and verify outputs match expectations.

@@ -102,136 +102,188 @@ def validate_basic(skill_path):
     return True, "Basic validation passed", {'frontmatter': frontmatter, 'content': content}
 
 
+def _find_line_matches(content: str, pattern: str, flags=0, max_hits: int = 5):
+    """Return up to max_hits matches as (line_no, line_text) for regex pattern."""
+    hits = []
+    rx = re.compile(pattern, flags)
+    for i, line in enumerate(content.splitlines(), start=1):
+        if rx.search(line):
+            hits.append((i, line.strip()))
+            if len(hits) >= max_hits:
+                break
+    return hits
+
+
+def _format_hits(hits):
+    if not hits:
+        return ""
+    parts = []
+    for ln, txt in hits:
+        if len(txt) > 120:
+            txt = txt[:117] + "..."
+        parts.append(f"L{ln}: {txt}")
+    return "; ".join(parts)
+
+
 def validate_comprehensive(skill_path, content, frontmatter):
     """
     Comprehensive validation - checks quality and style.
-    
-    Returns: list of (severity, message) tuples
+
+    Returns: list of (severity, message) tuples where severity is one of:
+      - 'error'   (must fix)
+      - 'warning' (should fix)
+      - 'info'    (nice to improve)
     """
     issues = []
     skill_path = Path(skill_path).resolve()
-    
-    # 1. Check description quality
+
+    # ----------------------------
+    # 1) Description quality (frontmatter)
+    # ----------------------------
     desc_match = re.search(r'description:\s*(.+)', frontmatter)
     if desc_match:
         description = desc_match.group(1).strip()
-        
-        # Check for MUST keyword (strong trigger pattern)
+
         if 'MUST' not in description and 'must' not in description:
             issues.append(('warning', "Description should use 'MUST' keyword for stronger trigger pattern"))
-        
-        # Check for trigger conditions
+
         if 'when' not in description.lower():
-            issues.append(('warning', "Description should include trigger conditions ('when...')"))
-        
-        # Check minimum length
+            issues.append(('warning', "Description should include trigger conditions (e.g., 'when...')"))
+
         if len(description) < 50:
             issues.append(('warning', f"Description may be too brief ({len(description)} chars) - consider adding more detail"))
-    
-    # 2. Check writing style
+
+    # ----------------------------
+    # 2) Structure / required sections (SKILL.md body)
+    # ----------------------------
     body_match = re.search(r'^---\n.*?\n---\n(.*)', content, re.DOTALL)
-    if body_match:
-        body = body_match.group(1)
-        
-        # Check for second-person pronouns (should use imperative form)
-        # Strip quoted content (inline double-quoted strings and blockquotes) before checking
-        body_stripped = re.sub(r'"[^"]*"', '', body, flags=re.MULTILINE)
-        body_stripped = re.sub(r'^\s*>.*', '', body_stripped, flags=re.MULTILINE)
-        second_person = re.findall(r'\b(you|your|yours|you\'ll|you\'d)\b', body_stripped, re.IGNORECASE)
-        if second_person:
-            issues.append(('info', f"Found {len(second_person)} second-person pronoun(s) - consider using imperative form instead"))
-        
-        # Check for TODO placeholders in body
-        todos = re.findall(r'\[TODO[^\]]*\]', body, re.IGNORECASE)
-        if todos:
-            issues.append(('warning', f"Found {len(todos)} TODO placeholder(s) in body - complete before packaging"))
-    
-    # 3. Check structure
-    sections = re.findall(r'^##\s+(.+)', content, re.MULTILINE)
-    
-    # Check for Overview section
-    if not any('overview' in s.lower() for s in sections):
-        issues.append(('info', "Consider adding an 'Overview' section for clarity"))
-    
-    # Check for common structure patterns
-    has_workflow = any('step' in s.lower() or 'workflow' in s.lower() or 'process' in s.lower() for s in sections)
-    has_tasks = any('task' in s.lower() or 'quick start' in s.lower() or 'quick reference' in s.lower() for s in sections)
-    has_capabilities = any('capabilit' in s.lower() or 'feature' in s.lower() for s in sections)
-    has_guidelines = any('guideline' in s.lower() or 'standard' in s.lower() or 'spec' in s.lower() or 'reference' in s.lower() for s in sections)
-    
-    if not (has_workflow or has_tasks or has_capabilities or has_guidelines):
-        issues.append(('info', "Skill doesn't follow common structure patterns - see skill-maker references/structure-patterns.md"))
-    
-    # 4. Check for references directory
+    body = body_match.group(1) if body_match else content
+
+    h1 = re.findall(r'(?m)^#\s+.+', body)
+    h2 = re.findall(r'(?m)^##\s+(.+)', body)
+
+    if not h1:
+        issues.append(('error', "Missing H1 title (# ...) in SKILL.md body"))
+
+    sections = [s.strip().lower() for s in h2]
+
+    if not any(s == 'overview' or s.startswith('overview') for s in sections):
+        issues.append(('error', "Missing required section: '## Overview'"))
+
+    non_overview = [s for s in sections if not s.startswith('overview')]
+    if len(non_overview) < 1:
+        issues.append(('error', "SKILL.md should include at least one section beyond '## Overview'"))
+
+    has_pattern = any(
+        any(k in s for k in ['workflow', 'tasks', 'guidelines', 'reference', 'capabilit', 'structure'])
+        for s in sections
+    )
+    if not has_pattern:
+        issues.append(('warning', "Skill doesn't show a recognizable structure pattern in headings (workflow/tasks/guidelines/capabilities/structure)"))
+
+    # ----------------------------
+    # 3) Placeholder / TODO gate (must be removed before packaging)
+    # ----------------------------
+    todo_hits = []
+    todo_hits += _find_line_matches(content, r'\[TODO', flags=re.IGNORECASE)
+    todo_hits += _find_line_matches(content, r'^\s*TODO:\s+', flags=re.IGNORECASE)
+
+    if todo_hits:
+        issues.append(('error', "Found TODO placeholder(s) - complete before packaging. " + _format_hits(todo_hits)))
+
+    # ----------------------------
+    # 4) Writing style hints (non-blocking)
+    # ----------------------------
+    body_stripped = re.sub(r'"[^"]*"', '', body, flags=re.MULTILINE)
+    body_stripped = re.sub(r'^\s*>.*', '', body_stripped, flags=re.MULTILINE)
+    second_person = re.findall(r"\b(you|your|yours|you'll|you'd)\b", body_stripped, re.IGNORECASE)
+    if second_person:
+        issues.append(('info', f"Found {len(second_person)} second-person pronoun(s) - consider using imperative form instead"))
+
+    # ----------------------------
+    # 5) Cross-platform path hygiene (prefer forward slashes in markdown)
+    # ----------------------------
+    backslash_hits = []
+    backslash_hits += _find_line_matches(content, r'references\\', flags=re.IGNORECASE)
+    backslash_hits += _find_line_matches(content, r'scripts\\', flags=re.IGNORECASE)
+    backslash_hits += _find_line_matches(content, r'assets\\', flags=re.IGNORECASE)
+    if backslash_hits:
+        issues.append(('warning', "Found Windows-style backslashes in paths - prefer forward slashes (/). " + _format_hits(backslash_hits)))
+
+    # ----------------------------
+    # 6) Resource directories referenced
+    # ----------------------------
     references_dir = skill_path / 'references'
     if references_dir.exists():
         ref_files = list(references_dir.glob('*.md'))
-        if ref_files:
-            # Check if SKILL.md references the references directory
-            if 'references/' not in content and 'references\\' not in content:
-                issues.append(('info', f"references/ directory exists with {len(ref_files)} file(s) but SKILL.md doesn't reference it"))
-    
-    # 5. Check for scripts directory
+        if ref_files and ('references/' not in content and 'references\\' not in content):
+            issues.append(('info', f"references/ exists with {len(ref_files)} file(s) but SKILL.md doesn't reference it"))
+
     scripts_dir = skill_path / 'scripts'
     if scripts_dir.exists():
         scripts = list(scripts_dir.glob('*.py')) + list(scripts_dir.glob('*.sh'))
-        if scripts:
-            # Check if SKILL.md references the scripts directory
-            if 'scripts/' not in content and 'scripts\\' not in content:
-                issues.append(('info', f"scripts/ directory exists with {len(scripts)} file(s) but SKILL.md doesn't reference it"))
-    
-    # 6. Check CHANGELOG.md
+        if scripts and ('scripts/' not in content and 'scripts\\' not in content):
+            issues.append(('info', f"scripts/ exists with {len(scripts)} file(s) but SKILL.md doesn't reference it"))
+
+    # ----------------------------
+    # 7) External dependencies hygiene (non-blocking)
+    # ----------------------------
+    mentions_deps = re.search(r'\b(API key|apikey|token|environment variable|env var|MCP|OAuth)\b', content, re.IGNORECASE)
+    has_deps_section = any('external dependenc' in s or 'dependency' in s for s in sections)
+    if mentions_deps and not has_deps_section:
+        issues.append(('warning', "Skill mentions external configuration but has no 'External Dependencies' section"))
+
     changelog = skill_path / 'CHANGELOG.md'
     if not changelog.exists():
         issues.append(('info', "No CHANGELOG.md found - consider adding one for version tracking"))
 
-    # 7. Cross-platform path hygiene (prefer forward slashes in markdown)
-    if 'references\\' in content or 'scripts\\' in content or 'assets\\' in content:
-        issues.append(('warning', "Found Windows-style backslashes in paths (e.g., 'references\\...') - prefer forward slashes (/)"))
-    
     return issues
+
 
 
 def validate_skill(skill_path, comprehensive=False):
     """
     Main validation function.
-    
+
     Args:
         skill_path: Path to skill directory
         comprehensive: If True, run additional quality checks
-        
+
     Returns: (valid: bool, message: str)
     """
-    # Basic validation
     valid, message, details = validate_basic(skill_path)
     if not valid:
         return False, message
-    
-    # Comprehensive validation
+
     if comprehensive:
         issues = validate_comprehensive(skill_path, details.get('content', ''), details.get('frontmatter', ''))
-        
         if issues:
-            # Format issues
-            issue_lines = []
+            errors = [i for i in issues if i[0] == 'error']
             warnings = [i for i in issues if i[0] == 'warning']
             infos = [i for i in issues if i[0] == 'info']
-            
+
+            lines = []
+            if errors:
+                lines.append("Errors:")
+                for _, msg in errors:
+                    lines.append(f"  - {msg}")
             if warnings:
-                issue_lines.append("Warnings:")
-                for severity, msg in warnings:
-                    issue_lines.append(f"  - {msg}")
-            
+                lines.append("Warnings:")
+                for _, msg in warnings:
+                    lines.append(f"  - {msg}")
             if infos:
-                issue_lines.append("Suggestions:")
-                for severity, msg in infos:
-                    issue_lines.append(f"  - {msg}")
-            
+                lines.append("Suggestions:")
+                for _, msg in infos:
+                    lines.append(f"  - {msg}")
+
+            if errors:
+                return False, f"Comprehensive validation failed with {len(errors)} error(s):\n" + "\n".join(lines)
+
             if warnings:
-                return True, f"Basic validation passed, but {len(warnings)} warning(s) found:\n" + "\n".join(issue_lines)
-            else:
-                return True, f"Validation passed with {len(infos)} suggestion(s):\n" + "\n".join(issue_lines)
-    
+                return True, f"Validation passed, but {len(warnings)} warning(s) found:\n" + "\n".join(lines)
+
+            return True, f"Validation passed with {len(infos)} suggestion(s):\n" + "\n".join(lines)
+
     return True, "Skill is valid!"
 
 

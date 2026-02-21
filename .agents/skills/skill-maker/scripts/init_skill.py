@@ -22,7 +22,7 @@ import re
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
-description: "[TODO: This skill guides a complete, [adjective] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
+description: "[TODO: This skill guides a complete, structured workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
 metadata:
   version: 0.0.0
   changelog: {skill_name}/CHANGELOG.md
@@ -32,15 +32,33 @@ metadata:
 
 ## Overview
 
-[TODO: 1-2 sentences explaining what this skill enables]
+TODO: Replace with 1–2 sentences explaining what this skill enables.
+
+## When to Use
+
+- Trigger phrases (examples): TODO
+- Out of scope: TODO
+
+## External Dependencies
+
+- None.
+- If required, list: API keys, environment variables, MCP tools, OS-specific paths, network access.
 
 ## Structure
 
-[TODO: Choose a structure pattern. See skill-maker references/structure-patterns.md for guidance.]
+Choose ONE pattern and structure the rest of the doc accordingly (see skill-maker `references/structure-patterns.md`):
 
-## [TODO: Main Section]
+- Workflow-Based
+- Task-Based
+- Reference/Guidelines
+- Capabilities-Based
 
-[TODO: Add content - code samples, decision trees, concrete examples, references to resources]
+## Main Content
+
+TODO: Add the actual workflow/tasks/guidelines/capabilities, including:
+- 2+ concrete example prompts
+- at least 1 verification step (expected output / invariants / success criteria)
+- at least 1 failure mode + what to do next
 
 ## Resources
 
@@ -49,7 +67,7 @@ metadata:
 
 SKILL_TEMPLATE_MINIMAL = """---
 name: {skill_name}
-description: "[TODO: This skill guides a complete, [adjective] [domain] workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
+description: "[TODO: This skill guides a complete, structured workflow from [START], through [MIDDLE], to [END]. This skill must be loaded (NON NEGOTIABLE) whenever user asks to [trigger1], [trigger2], or [catch-all].]"
 metadata:
   version: 0.0.0
   changelog: {skill_name}/CHANGELOG.md
@@ -59,9 +77,16 @@ metadata:
 
 ## Overview
 
-[TODO: 1-2 sentences explaining what this skill enables]
+TODO: Replace with 1–2 sentences explaining what this skill enables.
 
-## [TODO: Add sections based on structure pattern]
+## External Dependencies
+
+- None.
+- If required, list: API keys, environment variables, MCP tools, OS-specific paths, network access.
+
+## Main Content
+
+TODO: Add sections based on the chosen structure pattern.
 """
 
 CHANGELOG_TEMPLATE = """# Changelog
@@ -211,11 +236,16 @@ def init_skill(skill_name, path, minimal=False):
     # Print next steps
     print(f"\nSkill '{skill_name}' initialized at {skill_dir}")
     print("\nNext steps:")
-    print("1. Edit SKILL.md - complete TODO items and update description")
-    print("2. Update CHANGELOG.md with initial features")
+    steps = []
+    steps.append("Edit SKILL.md - complete TODO items and update description")
+    steps.append("Update CHANGELOG.md with initial features")
     if not minimal:
-        print("3. Customize or delete example files in scripts/, references/, assets/")
-    print("4. Run quick_validate.py to check skill structure when ready")
+        steps.append("Customize or delete example files in scripts/, references/, assets/")
+    else:
+        steps.append("Add scripts/, references/, assets/ as needed (or delete unused dirs)")
+    steps.append("Run quick_validate.py --comprehensive before packaging")
+    for i, s in enumerate(steps, start=1):
+        print(f"{i}. {s}")
 
     return skill_dir
 

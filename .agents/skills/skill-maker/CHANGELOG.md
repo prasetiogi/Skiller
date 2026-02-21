@@ -5,6 +5,19 @@ All notable changes to this skill will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 21 Feb 2026 06:15
+
+### Added
+- `scripts/smoke_test.py` - automated smoke gate (wraps comprehensive validation + quality checks)
+
+### Changed
+- `scripts/package_skill.py`: always normalizes zip paths to forward slashes and runs comprehensive validation by default
+- `scripts/init_skill.py`: reduced placeholder density in generated SKILL.md and fixed minimal-mode next-steps numbering
+
+### Fixed
+- `scripts/quick_validate.py`: comprehensive validation can now fail on errors (not just warn), with line-numbered output
+- `scripts/package_skill.py`: zip entries no longer depend on OS path separators (cross-platform safe)
+
 ## [2.3.0] - 21 Feb 2026 05:20
 
 ### Added

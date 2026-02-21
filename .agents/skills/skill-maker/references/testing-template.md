@@ -13,6 +13,8 @@ Validate that a *fresh agent* can:
 
 ## Setup
 
+- Run the automated smoke gate (optional but recommended):
+  - `scripts/smoke_test.py <path/to/skill-folder>`
 - Use a **fresh agent context** (no prior conversation state).
 - Ensure any required environment/config is present:
   - API keys (env vars)

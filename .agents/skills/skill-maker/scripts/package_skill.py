@@ -5,6 +5,9 @@ Skill Packager - Creates a distributable zip file of a skill folder
 Usage:
     package_skill.py <path/to/skill-folder> [output-directory] [--comprehensive]
 
+Note:
+    Packaging always runs comprehensive validation; --comprehensive keeps the CLI compatible and may be removed later.
+
 Example:
     package_skill.py skills/public/my-skill
     package_skill.py skills/public/my-skill ./dist
@@ -50,7 +53,7 @@ def package_skill(skill_path, output_dir=None, comprehensive=False):
 
     # Run validation before packaging
     print("🔍 Validating skill...")
-    valid, message = validate_skill(skill_path, comprehensive=comprehensive)
+    valid, message = validate_skill(skill_path, comprehensive=True)
     if not valid:
         print(f"❌ Validation failed: {message}")
         print("   Please fix the validation errors before packaging.")
@@ -84,7 +87,7 @@ def package_skill(skill_path, output_dir=None, comprehensive=False):
         with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for i, file_path in enumerate(files, start=1):
                 # Calculate the relative path within the zip (includes the skill folder name)
-                arcname = file_path.relative_to(skill_path.parent)
+                arcname = file_path.relative_to(skill_path.parent).as_posix()
                 zipf.write(file_path, arcname)
                 print(f"  Added ({i}/{total}): {arcname}")
 
